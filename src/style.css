@@ -1,0 +1,494 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Enhanced lil-gui styling - Click to toggle drawer */
+.lil-gui {
+  --background-color: rgba(10, 12, 18, 0.85) !important;
+  --widget-color: rgba(25, 30, 45, 0.7) !important;
+  --hover-color: rgba(35, 42, 60, 0.8) !important;
+  --focus-color: rgba(50, 60, 85, 0.9) !important;
+  --number-color: #8ba5b5 !important;
+  --string-color: #7a9aa8 !important;
+  --font-size: 11px !important;
+  --input-font-size: 11px !important;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  --font-family-mono: 'Fira Code', 'Courier New', monospace !important;
+  --padding: 5px !important;
+  --spacing: 4px !important;
+  --widget-height: 22px !important;
+  --title-height: 28px !important;
+  --name-width: 48% !important;
+  --slider-knob-width: 2px !important;
+  --slider-input-width: 28% !important;
+  --color-input-width: 65% !important;
+  --slider-input-min-width: 45px !important;
+  --color-input-min-width: 60px !important;
+  --folder-indent: 6px !important;
+  --widget-padding: 0 0 0 3px !important;
+  --widget-border-radius: 3px !important;
+  --checkbox-size: calc(0.75 * var(--widget-height)) !important;
+  --scrollbar-width: 4px !important;
+
+  /* 侧边定位 */
+  position: fixed !important;
+  top: 35% !important;
+  right: 0 !important;
+  max-height: 80vh !important;
+  width: 260px !important;
+  z-index: 1000 !important;
+
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: 12px 0 0 12px !important;
+  border: 1px solid rgba(100, 120, 150, 0.2) !important;
+  border-right: none !important;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset !important;
+  margin: 0 !important;
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.3s ease !important;
+}
+
+/* 收起状态 - 只显示按钮 */
+.lil-gui.collapsed {
+  transform: translateY(-50%) translateX(100%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 展开状态 - 完整显示面板 */
+.lil-gui.expanded {
+  transform: translateY(-50%) translateX(0) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+
+
+/* Title styling */
+.lil-gui .title {
+  background: linear-gradient(135deg, rgba(60, 80, 110, 0.4), rgba(40, 55, 80, 0.4)) !important;
+  color: rgba(200, 215, 230, 0.9) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.3px !important;
+  text-transform: none !important;
+  font-size: 11px !important;
+  padding: 6px 10px !important;
+  border-radius: 10px 0 0 0 !important;
+  border-bottom: 1px solid rgba(80, 100, 130, 0.2) !important;
+}
+
+/* Folder styling */
+.lil-gui .folder>.title {
+  background: rgba(20, 28, 42, 0.5) !important;
+  color: rgba(180, 195, 215, 0.9) !important;
+  font-weight: 500 !important;
+  border-radius: 4px !important;
+  margin: 3px 0 !important;
+  transition: all 0.2s ease !important;
+  border-left: 2px solid rgba(100, 130, 170, 0.2) !important;
+}
+
+.lil-gui .folder>.title:hover {
+  background: rgba(35, 45, 65, 0.7) !important;
+  border-left-color: rgba(120, 150, 190, 0.5) !important;
+  padding-left: 8px !important;
+}
+
+.lil-gui .folder.closed>.title {
+  border-radius: 4px !important;
+}
+
+/* Controller styling */
+.lil-gui .controller {
+  margin: 2px 0 !important;
+  padding: 3px 6px !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.lil-gui .controller:hover {
+  background: rgba(35, 45, 65, 0.35) !important;
+}
+
+.lil-gui .controller.color {
+  padding: 3px 6px !important;
+}
+
+/* Widget name styling */
+.lil-gui .controller .name {
+  color: rgba(160, 175, 195, 0.85) !important;
+  font-weight: 400 !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.2px !important;
+}
+
+/* Input and slider styling */
+.lil-gui input,
+.lil-gui select {
+  background: rgba(15, 22, 35, 0.6) !important;
+  color: rgba(200, 210, 225, 0.9) !important;
+  border: 1px solid rgba(70, 90, 120, 0.25) !important;
+  border-radius: 3px !important;
+  padding: 3px 5px !important;
+  font-size: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.lil-gui input:hover {
+  border-color: rgba(90, 115, 150, 0.4) !important;
+  background: rgba(25, 35, 50, 0.7) !important;
+}
+
+.lil-gui input:focus {
+  border-color: rgba(110, 140, 180, 0.6) !important;
+  background: rgba(30, 42, 60, 0.8) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(80, 110, 150, 0.15) !important;
+}
+
+/* Slider styling */
+.lil-gui .controller.number input {
+  color: rgba(150, 180, 210, 0.9) !important;
+  font-weight: 500 !important;
+}
+
+.lil-gui .slider {
+  background: rgba(15, 22, 35, 0.5) !important;
+  border-radius: 3px !important;
+  border: 1px solid rgba(60, 80, 110, 0.2) !important;
+}
+
+.lil-gui .slider .fill {
+  background: linear-gradient(90deg, rgba(90, 130, 180, 0.7), rgba(120, 160, 200, 0.6)) !important;
+  border-radius: 2px !important;
+  opacity: 0.7 !important;
+}
+
+.lil-gui .slider:hover .fill {
+  opacity: 0.9 !important;
+}
+
+/* Color picker styling */
+.lil-gui .controller.color input[type="text"] {
+  color: #a8edea !important;
+  font-family: 'Fira Code', monospace !important;
+  font-weight: 500 !important;
+}
+
+.lil-gui .color-picker {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Scrollbar styling */
+.lil-gui::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+.lil-gui::-webkit-scrollbar-track {
+  background: rgba(10, 15, 25, 0.4) !important;
+  border-radius: 2px !important;
+}
+
+.lil-gui::-webkit-scrollbar-thumb {
+  background: rgba(80, 100, 130, 0.4) !important;
+  border-radius: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+.lil-gui::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 125, 160, 0.5) !important;
+}
+
+/* Folder arrow styling */
+.lil-gui .folder>.title::before {
+  border-color: rgba(120, 150, 190, 0.5) !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.lil-gui .folder>.title:hover::before {
+  opacity: 0.9 !important;
+}
+
+/* Children container */
+.lil-gui .children {
+  padding: 3px 0 !important;
+  border-left: 1px solid rgba(70, 90, 120, 0.15) !important;
+  margin-left: 6px !important;
+}
+
+/* Animation for opening folders */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lil-gui .folder:not(.closed)>.children {
+  animation: slideDown 0.2s ease !important;
+}
+
+/* 分页控制样式 */
+/* 自定义页面标题 */
+.gui-page-title {
+  padding: 10px 12px !important;
+  background: linear-gradient(135deg, rgba(40, 55, 80, 0.5), rgba(30, 42, 65, 0.6)) !important;
+  border-bottom: 1px solid rgba(100, 130, 170, 0.25) !important;
+  color: rgba(200, 215, 235, 1) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  letter-spacing: 0.5px !important;
+  margin: 0 !important;
+}
+
+.gui-pagination {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 10px !important;
+  background: linear-gradient(135deg, rgba(20, 28, 42, 0.6), rgba(15, 20, 30, 0.7)) !important;
+  border-top: 1px solid rgba(100, 130, 170, 0.2) !important;
+  border-radius: 0 0 0 12px !important;
+  margin-top: 8px !important;
+  gap: 8px !important;
+}
+
+.gui-page-btn {
+  width: 32px !important;
+  height: 28px !important;
+  background: rgba(30, 42, 60, 0.7) !important;
+  border: 1px solid rgba(100, 130, 170, 0.3) !important;
+  border-radius: 4px !important;
+  color: rgba(150, 180, 220, 0.9) !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+}
+
+.gui-page-btn:hover:not(:disabled) {
+  background: rgba(40, 55, 80, 0.85) !important;
+  border-color: rgba(120, 150, 190, 0.5) !important;
+  color: rgba(180, 210, 250, 1) !important;
+  transform: scale(1.05) !important;
+}
+
+.gui-page-btn:active:not(:disabled) {
+  transform: scale(0.95) !important;
+}
+
+.gui-page-btn:disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}
+
+.gui-page-indicator {
+  flex: 1 !important;
+  text-align: center !important;
+  color: rgba(180, 195, 215, 0.9) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* 隐藏未激活页面的folder标题 */
+.lil-gui.paginated-gui .folder.closed>.title {
+  display: none !important;
+}
+
+/* 只显示打开的folder标题 */
+.lil-gui.paginated-gui .folder:not(.closed)>.title {
+  display: block !important;
+  margin-bottom: 6px !important;
+}
+
+/* 隐藏所有folder的标题 */
+.lil-gui.paginated-gui .folder>.title {
+  display: none !important;
+}
+
+/* 确保folder内容正常显示 */
+.lil-gui.paginated-gui .folder>.children {
+  border-left: none !important;
+  margin-left: 0 !important;
+  padding: 6px 0 !important;
+}
+/* 隐藏GUI标题的折叠按钮 */
+.lil-gui.paginated-gui > .title::before {
+  display: none !important;
+}
+
+.lil-gui.paginated-gui > .title {
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+.gui-toggle-btn:active {
+  transform: translateY(-50%) translateY(-180px) scale(0.95) !important;
+}
+
+/* 标题内的关闭按钮 */
+.gui-close-btn {
+  position: absolute !important;
+  right: 8px !important;
+  top: 35% !important;
+  transform: translateY(-50%) !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: rgba(60, 80, 110, 0.5) !important;
+  border: 1px solid rgba(100, 130, 170, 0.3) !important;
+  border-radius: 4px !important;
+  color: rgba(200, 215, 230, 0.9) !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+  padding: 0 !important;
+}
+
+.gui-close-btn:hover {
+  background: rgba(80, 100, 130, 0.7) !important;
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+/* 展开按钮（面板收起时显示）*/
+.gui-expand-btn {
+  position: fixed !important;
+  top: 35% !important;
+  right: 0 !important;
+  transform: translateY(-50%) translateY(-180px) !important;
+  width: 28px !important;
+  height: 32px !important;
+  background: linear-gradient(135deg, rgba(20, 28, 42, 0.9), rgba(15, 20, 30, 0.95)) !important;
+  border: 1px solid rgba(100, 130, 170, 0.25) !important;
+  border-right: none !important;
+  border-radius: 8px 0 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 1001 !important;
+  color: rgba(150, 180, 220, 0.8) !important;
+  font-size: 14px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.25s ease !important;
+  pointer-events: auto !important;
+}
+
+.gui-expand-btn:hover {
+  background: linear-gradient(135deg, rgba(30, 42, 60, 0.95), rgba(25, 35, 50, 0.98)) !important;
+  color: rgba(180, 210, 250, 1) !important;
+  width: 32px !important;
+}
+
+/* 标题样式调整 - 为关闭按钮留出空间 */
+.lil-gui.paginated-gui > .title {
+  position: relative !important;
+  padding-right: 40px !important;
+}
+
+
+/* 展开按钮样式（面板收起时显示）*/
+.gui-expand-btn {
+  position: fixed !important;
+  top: 35% !important;
+  right: 0 !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 40px !important;
+  background: linear-gradient(135deg, rgba(20, 28, 42, 0.9), rgba(15, 20, 30, 0.95)) !important;
+  border: 1px solid rgba(100, 130, 170, 0.25) !important;
+  border-right: none !important;
+  border-radius: 8px 0 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 1001 !important;
+  color: rgba(150, 180, 220, 0.8) !important;
+  font-size: 16px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.25s ease !important;
+  pointer-events: auto !important;
+}
+
+.gui-expand-btn:hover {
+  background: linear-gradient(135deg, rgba(30, 42, 60, 0.95), rgba(25, 35, 50, 0.98)) !important;
+  color: rgba(180, 210, 250, 1) !important;
+  width: 36px !important;
+}
+
+/* 当面板展开时，隐藏展开按钮 */
+.lil-gui:not(.collapsed) ~ .gui-expand-btn {
+  display: none !important;
+}
+
+/* 当面板收起时，显示展开按钮 */
+.lil-gui.collapsed ~ .gui-expand-btn {
+  display: flex !important;
+}
+
+/* 关闭按钮样式 - 确保可点击 */
+.gui-close-btn {
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: rgba(60, 80, 110, 0.5) !important;
+  border: 1px solid rgba(100, 130, 170, 0.3) !important;
+  border-radius: 4px !important;
+  color: rgba(200, 215, 230, 0.9) !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+  padding: 0 !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+}
+
+.gui-close-btn:hover {
+  background: rgba(80, 100, 130, 0.7) !important;
+  color: rgba(255, 255, 255, 1) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.gui-close-btn:active {
+  transform: translateY(-50%) scale(0.95) !important;
+}
